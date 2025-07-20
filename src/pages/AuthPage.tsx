@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -8,6 +8,7 @@ import {
   onAuthStateChanged,
   updateProfile,
 } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import {
   Box,
   Button,
@@ -71,6 +72,25 @@ const AuthPage = () => {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(cred.user, { displayName: `${firstName} ${lastName}` });
       await sendEmailVerification(cred.user);
+      
+      // Create member record in Firestore
+      const memberData = {
+        firstName,
+        lastName,
+        email,
+        isAdmin: false,
+        isCreator: false,
+        createdAt: new Date(),
+        // Optional fields
+        mobile: '',
+        village: '',
+        taluka: '',
+        district: '',
+        state: ''
+      };
+      
+      await setDoc(doc(db, 'profiles', cred.user.uid), memberData);
+      
       setInfo('Registration successful! Please verify your email.');
     } catch (err: any) {
       setError(err.message);

@@ -27,17 +27,15 @@ function App() {
       <Router>
         <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
           <Navbar />
-          <Container maxWidth="lg" sx={{ py: 4, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Box sx={{ width: '100%', maxWidth: 800 }}>
-              <Routes>
-                <Route path="/auth/*" element={<AuthPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/communities/:community" element={<CommunityPostsPage />} />
-                <Route path="/admin" element={<AdminPage />} />
-                <Route path="/*" element={<HomePage />} />
-                <Route path="*" element={<Navigate to="/" />} />
-              </Routes>
-            </Box>
+          <Container maxWidth="xl" sx={{ py: 4, flex: 1 }}>
+            <Routes>
+              <Route path="/auth/*" element={<AuthPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/communities/:community" element={<CommunityPostsPage />} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="/*" element={<HomePage />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
           </Container>
           <Footer />
         </Box>

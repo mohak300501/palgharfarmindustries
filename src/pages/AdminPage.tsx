@@ -131,7 +131,7 @@ const AdminPage = () => {
   const stats = getStats();
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box>
       <Typography variant="h4" mb={2} textAlign="center">Admin Panel</Typography>
       {error && <Alert severity="error">{error}</Alert>}
       {info && <Alert severity="success">{info}</Alert>}

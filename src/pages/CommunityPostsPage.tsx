@@ -41,7 +41,6 @@ const CommunityPostsPage = () => {
   const [newComment, setNewComment] = useState('');
   const [userRole, setUserRole] = useState('user');
   const [isJoined, setIsJoined] = useState(false);
-  const [joinDialog, setJoinDialog] = useState(false);
   const [leaveDialog, setLeaveDialog] = useState(false);
   const [confirmName, setConfirmName] = useState('');
   const navigate = useNavigate();
@@ -106,7 +105,6 @@ const CommunityPostsPage = () => {
         setUserRole('member');
         setInfo(`Joined ${community} community! You can now interact with posts and comments.`);
       }
-      setJoinDialog(false);
     } catch (err: any) {
       setError(err.message);
     }
@@ -241,7 +239,7 @@ const CommunityPostsPage = () => {
   if (!community) return <Box textAlign="center" mt={8}><Alert severity="error">Community not found</Alert></Box>;
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box>
       <Typography variant="h4" mb={2} textAlign="center">
         {community.charAt(0).toUpperCase() + community.slice(1)} Community
       </Typography>
@@ -264,7 +262,7 @@ const CommunityPostsPage = () => {
             <Typography variant="body2" mb={2} color="text.secondary">
               You will be able to interact with posts and comments. It will be added to your profile.
             </Typography>
-            <Button variant="contained" onClick={() => setJoinDialog(true)}>
+            <Button variant="contained" onClick={handleJoinCommunity}>
               Join Community
             </Button>
           </Box>
@@ -352,20 +350,6 @@ const CommunityPostsPage = () => {
           ))
         )}
       </Stack>
-
-      {/* Join Community Dialog */}
-      <Dialog open={joinDialog} onClose={() => setJoinDialog(false)}>
-        <DialogTitle>Join Community</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Do you want to join this community? You will be able to interact with posts and comments. It will be added to your profile.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setJoinDialog(false)}>Cancel</Button>
-          <Button onClick={handleJoinCommunity} variant="contained">Join</Button>
-        </DialogActions>
-      </Dialog>
 
       {/* Leave Community Dialog */}
       <Dialog open={leaveDialog} onClose={() => setLeaveDialog(false)}>
