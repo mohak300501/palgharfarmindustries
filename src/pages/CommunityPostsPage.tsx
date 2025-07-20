@@ -28,10 +28,18 @@ interface Comment {
   dislikes: string[];
 }
 
+interface Community {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: any;
+}
+
 const CommunityPostsPage = () => {
   const { community } = useParams();
   const [user, setUser] = useState<any>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [communityData, setCommunityData] = useState<Community | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
@@ -71,9 +79,25 @@ const CommunityPostsPage = () => {
 
   useEffect(() => {
     if (community) {
+      loadCommunityData();
       loadPosts();
     }
   }, [community]);
+
+  const loadCommunityData = async () => {
+    if (!community) return;
+    try {
+      const communityRef = doc(db, 'communities', community);
+      const communitySnap = await getDoc(communityRef);
+      if (communitySnap.exists()) {
+        setCommunityData({ id: communitySnap.id, ...communitySnap.data() } as Community);
+      } else {
+        setError('Community not found');
+      }
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
 
   const loadPosts = async () => {
     if (!community) return;
@@ -103,7 +127,7 @@ const CommunityPostsPage = () => {
         await setDoc(ref, { communities }, { merge: true });
         setIsJoined(true);
         setUserRole('member');
-        setInfo(`Joined ${community} community! You can now interact with posts and comments.`);
+        setInfo(`Joined ${communityData?.name || community} community! You can now interact with posts and comments.`);
       }
     } catch (err: any) {
       setError(err.message);
@@ -111,7 +135,7 @@ const CommunityPostsPage = () => {
   };
 
   const handleLeaveCommunity = async () => {
-    if (confirmName !== community) {
+    if (confirmName !== (communityData?.name || community)) {
       setError('Community name does not match.');
       return;
     }
@@ -125,7 +149,7 @@ const CommunityPostsPage = () => {
       await setDoc(ref, { communities }, { merge: true });
       setIsJoined(false);
       setUserRole('user');
-      setInfo(`Left ${community} community. All your interactions have been deleted.`);
+      setInfo(`Left ${communityData?.name || community} community. All your interactions have been deleted.`);
       setLeaveDialog(false);
       setConfirmName('');
     } catch (err: any) {
@@ -236,13 +260,19 @@ const CommunityPostsPage = () => {
   };
 
   if (loading) return <Box textAlign="center" mt={8}><Alert severity="info">Loading...</Alert></Box>;
-  if (!community) return <Box textAlign="center" mt={8}><Alert severity="error">Community not found</Alert></Box>;
+  if (!community || !communityData) return <Box textAlign="center" mt={8}><Alert severity="error">Community not found</Alert></Box>;
 
   return (
     <Box>
       <Typography variant="h4" mb={2} textAlign="center">
-        {community.charAt(0).toUpperCase() + community.slice(1)} Community
+        {communityData.name.charAt(0).toUpperCase() + communityData.name.slice(1)} Community
       </Typography>
+      
+      {communityData.description && (
+        <Typography variant="body1" color="text.secondary" textAlign="center" mb={3}>
+          {communityData.description}
+        </Typography>
+      )}
       
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       {info && <Alert severity="success" sx={{ mb: 2 }}>{info}</Alert>}
@@ -356,7 +386,7 @@ const CommunityPostsPage = () => {
         <DialogTitle>Leave Community</DialogTitle>
         <DialogContent>
           <Typography>Are you sure you want to leave this community? All your interactions will be deleted. Community will be removed from your profile.</Typography>
-          <Typography mt={2}>Type the community name (<b>{community}</b>) to confirm:</Typography>
+          <Typography mt={2}>Type the community name (<b>{communityData.name}</b>) to confirm:</Typography>
           <TextField fullWidth value={confirmName} onChange={e => setConfirmName(e.target.value)} sx={{ mt: 1 }} />
         </DialogContent>
         <DialogActions>

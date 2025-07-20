@@ -13,13 +13,13 @@ const Footer = () => {
   const loadStats = async () => {
     try {
       const profilesSnap = await getDocs(collection(db, 'profiles'));
-      const membershipsSnap = await getDocs(collection(db, 'memberships'));
+      const communitiesSnap = await getDocs(collection(db, 'communities'));
       
       const profiles = profilesSnap.docs.map(doc => doc.data());
-      const memberships = membershipsSnap.docs.map(doc => doc.data());
+      const communities = communitiesSnap.docs.map(doc => doc.data());
       
       const totalMembers = profiles.length;
-      const totalCommunities = new Set(memberships.flatMap(m => m.communities || [])).size;
+      const totalCommunities = communities.length;
       const totalVillages = new Set(profiles.map(p => p.village).filter(Boolean)).size;
       
       setStats({ members: totalMembers, communities: totalCommunities, villages: totalVillages });

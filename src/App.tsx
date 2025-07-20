@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider, CssBaseline, Container, Box } from '@mui/material';
+import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
@@ -27,7 +27,7 @@ function App() {
       <Router>
         <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
           <Navbar />
-          <Container maxWidth="xl" sx={{ py: 4, flex: 1 }}>
+          <Box sx={{ py: 4, flex: 1, px: 2 }}>
             <Routes>
               <Route path="/auth/*" element={<AuthPage />} />
               <Route path="/profile" element={<ProfilePage />} />
@@ -36,7 +36,7 @@ function App() {
               <Route path="/*" element={<HomePage />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
-          </Container>
+          </Box>
           <Footer />
         </Box>
       </Router>

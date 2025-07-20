@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { auth } from '../firebase';
+import { useState, useEffect } from 'react';
+import { auth, db } from '../firebase';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { collection, getDocs } from 'firebase/firestore';
 import {
   AppBar,
   Toolbar,
@@ -20,14 +21,17 @@ import {
 } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
 
-const COMMUNITIES = [
-  'goat', 'sheep', 'poultry', 'cattle', 'fish', 'honeybee', 'chickoo', 'paddy', 'mango'
-];
+interface Community {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: any;
+}
 
 const Navbar = () => {
   const [user, setUser] = useState<any>(null);
+  const [communities, setCommunities] = useState<Community[]>([]);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
@@ -41,6 +45,23 @@ const Navbar = () => {
     });
     return () => unsub();
   }, []);
+
+  useEffect(() => {
+    loadCommunities();
+  }, []);
+
+  const loadCommunities = async () => {
+    try {
+      const communitiesSnap = await getDocs(collection(db, 'communities'));
+      const communitiesData = communitiesSnap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Community));
+      setCommunities(communitiesData);
+    } catch (err) {
+      console.error('Error loading communities:', err);
+    }
+  };
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -60,15 +81,15 @@ const Navbar = () => {
     navigate('/');
   };
 
-  const handleCommunityClick = (community: string) => {
-    navigate(`/communities/${community}`);
+  const handleCommunityClick = (community: Community) => {
+    navigate(`/communities/${community.id}`);
     if (isMobile) {
       setMobileOpen(false);
     }
   };
 
-  const isActiveCommunity = (community: string) => {
-    return location.pathname === `/communities/${community}`;
+  const isActiveCommunity = (community: Community) => {
+    return location.pathname === `/communities/${community.id}`;
   };
 
   const drawer = (
@@ -77,14 +98,14 @@ const Navbar = () => {
         Communities
       </Typography>
       <List>
-        {COMMUNITIES.map((community) => (
+        {communities.map((community) => (
           <ListItemButton
-            key={community}
+            key={community.id}
             onClick={() => handleCommunityClick(community)}
             selected={isActiveCommunity(community)}
           >
             <ListItemText 
-              primary={community.charAt(0).toUpperCase() + community.slice(1)}
+              primary={community.name.charAt(0).toUpperCase() + community.name.slice(1)}
               sx={{ textAlign: 'center' }}
             />
           </ListItemButton>
@@ -118,9 +139,9 @@ const Navbar = () => {
 
           {/* Desktop Community Tabs */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, flexGrow: 1, justifyContent: 'center' }}>
-            {COMMUNITIES.map((community) => (
+            {communities.map((community) => (
               <Button
-                key={community}
+                key={community.id}
                 color="inherit"
                 onClick={() => handleCommunityClick(community)}
                 sx={{
@@ -131,7 +152,7 @@ const Navbar = () => {
                   },
                 }}
               >
-                {community.charAt(0).toUpperCase() + community.slice(1)}
+                {community.name.charAt(0).toUpperCase() + community.name.slice(1)}
               </Button>
             ))}
           </Box>
