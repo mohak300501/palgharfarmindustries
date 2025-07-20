@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import { Box, Typography, Link, Stack, Paper } from '@mui/material';
+import { Box, Typography, Link, Stack, Paper, IconButton } from '@mui/material';
+import { Email } from '@mui/icons-material';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 const Footer = () => {
   const [stats, setStats] = useState({ members: 0, communities: 0, villages: 0 });
@@ -36,16 +38,34 @@ const Footer = () => {
         <Typography variant="h6" mb={2}>Dahanu Farm Industries Portal</Typography>
         
         <Stack direction="row" spacing={4} justifyContent="center" mb={2}>
-          <Typography>Total Members: {stats.members}</Typography>
-          <Typography>Total Communities: {stats.communities}</Typography>
-          <Typography>Total Villages: {stats.villages}</Typography>
+          <Typography>Members: {stats.members}</Typography>
+          <Typography>Communities: {stats.communities}</Typography>
+          <Typography>Villages: {stats.villages}</Typography>
         </Stack>
         
-        <Stack direction="row" spacing={3} justifyContent="center">
+        <Stack direction="row" spacing={3} justifyContent="center" mb={2}>
           <Link href="/about" color="inherit" underline="hover">About</Link>
-          <Link href="/contact" color="inherit" underline="hover">Contact</Link>
           <Link href="/terms" color="inherit" underline="hover">Terms & Conditions</Link>
-          <Link href="https://github.com/your-repo" target="_blank" color="inherit" underline="hover">GitHub</Link>
+        </Stack>
+        
+        <Stack direction="row" spacing={2} justifyContent="center">
+          <IconButton 
+            href="/contact" 
+            color="inherit" 
+            size="small"
+            title="Contact us"
+          >
+            <Email />
+          </IconButton>
+          <IconButton 
+            href="https://github.com/your-repo" 
+            target="_blank" 
+            color="inherit" 
+            size="small"
+            title="Visit our GitHub repository"
+          >
+            <GitHubIcon />
+          </IconButton>
         </Stack>
         
         <Typography variant="body2" color="text.secondary" mt={2}>

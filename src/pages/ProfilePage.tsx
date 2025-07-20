@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
-import { updateEmail, sendPasswordResetEmail, onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { updateEmail, sendPasswordResetEmail, onAuthStateChanged, deleteUser } from 'firebase/auth';
+import { updateDoc, doc, getDoc, setDoc, collection, getDocs, query, where, deleteDoc } from 'firebase/firestore';
 import { Box, Button, TextField, Typography, Paper, Stack, Alert, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { DeleteAccountDialog } from '../components/community';
+import { adminService } from '../services/adminService';
+import { communityService } from '../services/communityService';
 
 const ProfilePage = () => {
   const [user, setUser] = useState<any>(null);
@@ -13,6 +16,9 @@ const ProfilePage = () => {
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
   const navigate = useNavigate();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [confirmName, setConfirmName] = useState('');
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
@@ -66,6 +72,40 @@ const ProfilePage = () => {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    setDeleteLoading(true);
+    setError('');
+    setInfo('');
+    try {
+      // 1. Delete all posts by user
+      const postsSnap = await getDocs(query(collection(db, 'posts'), where('authorId', '==', user.uid)));
+      for (const postDoc of postsSnap.docs) {
+        await deleteDoc(doc(db, 'posts', postDoc.id));
+      }
+      // 2. Delete all comments by user
+      const commentsSnap = await getDocs(query(collection(db, 'comments'), where('authorId', '==', user.uid)));
+      for (const commentDoc of commentsSnap.docs) {
+        await deleteDoc(doc(db, 'comments', commentDoc.id));
+      }
+      // 3. Delete all likes/dislikes by user
+      const likesSnap = await getDocs(query(collection(db, 'likes'), where('userId', '==', user.uid)));
+      for (const likeDoc of likesSnap.docs) {
+        await deleteDoc(doc(db, 'likes', likeDoc.id));
+      }
+      // 4. Delete user profile and membership
+      await adminService.deleteMember(user.uid);
+      // 5. Delete user from Firebase Auth
+      await deleteUser(user);
+      setInfo('Account deleted successfully.');
+      setTimeout(() => {
+        navigate('/auth');
+      }, 1500);
+    } catch (err: any) {
+      setError(err.message || 'Failed to delete account.');
+    }
+    setDeleteLoading(false);
+  };
+
   if (loading) return <Box textAlign="center" mt={8}><Alert severity="info">Loading...</Alert></Box>;
 
   return (
@@ -91,8 +131,20 @@ const ProfilePage = () => {
             <Button variant="outlined" onClick={() => setEdit(true)}>Edit</Button>
           )}
           <Button onClick={() => navigate('/')}>Back to Home</Button>
+          <Button color="error" variant="outlined" onClick={() => setDeleteDialogOpen(true)}>
+            Delete Account
+          </Button>
         </Stack>
       </Paper>
+      <DeleteAccountDialog
+        open={deleteDialogOpen}
+        onClose={() => { setDeleteDialogOpen(false); setConfirmName(''); }}
+        fullName={`${profile.firstName || ''} ${profile.lastName || ''}`.trim()}
+        confirmName={confirmName}
+        onConfirmNameChange={setConfirmName}
+        onDelete={handleDeleteAccount}
+        loading={deleteLoading}
+      />
     </Box>
   );
 };

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import {
   AppBar,
   Toolbar,
@@ -34,14 +34,24 @@ const Navbar = () => {
   const [communities, setCommunities] = useState<Community[]>([]);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [userRole, setUserRole] = useState('user');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
+    const unsub = onAuthStateChanged(auth, async (u) => {
       setUser(u);
+      if (u) {
+        // Check user role
+        const profileRef = doc(db, 'profiles', u.uid);
+        const profileSnap = await getDoc(profileRef);
+        const profile = profileSnap.exists() ? profileSnap.data() : {};
+        if (profile.isAdmin) setUserRole('admin');
+        else if (profile.isCreator) setUserRole('creator');
+        else setUserRole('member');
+      }
     });
     return () => unsub();
   }, []);
@@ -82,14 +92,14 @@ const Navbar = () => {
   };
 
   const handleCommunityClick = (community: Community) => {
-    navigate(`/communities/${community.id}`);
+    navigate(`/c/${community.name}`);
     if (isMobile) {
       setMobileOpen(false);
     }
   };
 
   const isActiveCommunity = (community: Community) => {
-    return location.pathname === `/communities/${community.id}`;
+    return location.pathname === `/c/${community.name}`;
   };
 
   const drawer = (
@@ -191,6 +201,11 @@ const Navbar = () => {
                   <MenuItem onClick={() => { navigate('/profile'); handleUserMenuClose(); }}>
                     Profile
                   </MenuItem>
+                  {userRole === 'admin' && (
+                    <MenuItem onClick={() => { navigate('/admin'); handleUserMenuClose(); }}>
+                      Admin Panel
+                    </MenuItem>
+                  )}
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
               </>

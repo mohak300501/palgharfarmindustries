@@ -56,7 +56,13 @@ const AuthPage = () => {
     setLoading(true);
     setError('');
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      if (!cred.user.emailVerified) {
+        await auth.signOut();
+        setError('Please verify your email before logging in. Check your inbox for the verification link.');
+        setLoading(false);
+        return;
+      }
       setInfo('Login successful!');
     } catch (err: any) {
       setError(err.message);
@@ -90,8 +96,8 @@ const AuthPage = () => {
       };
       
       await setDoc(doc(db, 'profiles', cred.user.uid), memberData);
-      
-      setInfo('Registration successful! Please verify your email.');
+      await auth.signOut();
+      setInfo('Registration successful! Please verify your email before logging in. A verification link has been sent to your email address.');
     } catch (err: any) {
       setError(err.message);
     }
