@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
 import { updateEmail, sendPasswordResetEmail, onAuthStateChanged, deleteUser } from 'firebase/auth';
-import { updateDoc, doc, getDoc, setDoc, collection, getDocs, query, where, deleteDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, getDocs, query, where, deleteDoc } from 'firebase/firestore';
 import { Box, Button, TextField, Typography, Paper, Stack, Alert, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { DeleteAccountDialog } from '../components/community';
 import { adminService } from '../services/adminService';
-import { communityService } from '../services/communityService';
 
 const ProfilePage = () => {
   const [user, setUser] = useState<any>(null);
