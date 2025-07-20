@@ -131,14 +131,14 @@ const AdminPage = () => {
   const stats = getStats();
 
   return (
-    <Box>
-      <Typography variant="h4" mb={2}>Admin Panel</Typography>
+    <Box sx={{ width: '100%' }}>
+      <Typography variant="h4" mb={2} textAlign="center">Admin Panel</Typography>
       {error && <Alert severity="error">{error}</Alert>}
       {info && <Alert severity="success">{info}</Alert>}
       
       <Paper sx={{ p: 2, mb: 2 }}>
-        <Typography variant="h6" mb={1}>Statistics</Typography>
-        <Stack direction="row" spacing={4}>
+        <Typography variant="h6" mb={1} textAlign="center">Statistics</Typography>
+        <Stack direction="row" spacing={4} justifyContent="center">
           <Typography>Total Members: {stats.totalMembers}</Typography>
           <Typography>Total Communities: {stats.totalCommunities}</Typography>
           <Typography>Total Villages: {stats.totalVillages}</Typography>
@@ -146,8 +146,8 @@ const AdminPage = () => {
       </Paper>
 
       <Paper sx={{ p: 2, mb: 2 }}>
-        <Typography variant="h6" mb={1}>Filter Members</Typography>
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Typography variant="h6" mb={1} textAlign="center">Filter Members</Typography>
+        <Stack direction="row" spacing={2} alignItems="center" justifyContent="center" flexWrap="wrap">
           <FormControl sx={{ minWidth: 120 }}>
             <InputLabel>Filter by</InputLabel>
             <Select
@@ -217,7 +217,9 @@ const AdminPage = () => {
         </Table>
       </TableContainer>
 
-      <Button sx={{ mt: 2 }} onClick={() => navigate('/')}>Back to Home</Button>
+      <Box textAlign="center" mt={2}>
+        <Button onClick={() => navigate('/')}>Back to Home</Button>
+      </Box>
     </Box>
   );
 };

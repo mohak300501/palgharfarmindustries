@@ -28,6 +28,8 @@ const Footer = () => {
     }
   };
 
+  const currentYear = new Date().getFullYear();
+
   return (
     <Paper sx={{ mt: 4, p: 3, bgcolor: 'grey.100' }}>
       <Box textAlign="center">
@@ -47,7 +49,7 @@ const Footer = () => {
         </Stack>
         
         <Typography variant="body2" color="text.secondary" mt={2}>
-          © 2024 Dahanu Farm Industries. All rights reserved.
+          © {currentYear} Dahanu Farm Industries. All rights reserved.
         </Typography>
       </Box>
     </Paper>

@@ -108,7 +108,7 @@ const AuthPage = () => {
 
   return (
     <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
-      <Paper elevation={3} sx={{ p: 4, minWidth: 350 }}>
+      <Paper elevation={3} sx={{ p: 4, minWidth: 350, width: '100%', maxWidth: 450 }}>
         <Tabs value={tab} onChange={handleTab} centered>
           <Tab label="Login" />
           <Tab label="Register" />
@@ -117,7 +117,7 @@ const AuthPage = () => {
         {info && <Alert severity="success" sx={{ mt: 2 }}>{info}</Alert>}
         {showReset ? (
           <Box component="form" onSubmit={handleResetPassword} mt={2}>
-            <Typography variant="h6">Reset Password</Typography>
+            <Typography variant="h6" textAlign="center">Reset Password</Typography>
             <TextField
               label="Email"
               type="email"

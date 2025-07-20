@@ -4,10 +4,10 @@ import { createTheme } from '@mui/material/styles';
 import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
-import CommunitiesPage from './pages/CommunitiesPage';
 import CommunityPostsPage from './pages/CommunityPostsPage';
 import AdminPage from './pages/AdminPage';
 import Footer from './components/Footer';
+import Navbar from './components/Navbar';
 
 const theme = createTheme({
   palette: {
@@ -26,16 +26,18 @@ function App() {
       <CssBaseline />
       <Router>
         <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-          <Container maxWidth="md" sx={{ py: 4, flex: 1 }}>
-            <Routes>
-              <Route path="/auth/*" element={<AuthPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/communities" element={<CommunitiesPage />} />
-              <Route path="/communities/:community" element={<CommunityPostsPage />} />
-              <Route path="/admin" element={<AdminPage />} />
-              <Route path="/*" element={<HomePage />} />
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
+          <Navbar />
+          <Container maxWidth="lg" sx={{ py: 4, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box sx={{ width: '100%', maxWidth: 800 }}>
+              <Routes>
+                <Route path="/auth/*" element={<AuthPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/communities/:community" element={<CommunityPostsPage />} />
+                <Route path="/admin" element={<AdminPage />} />
+                <Route path="/*" element={<HomePage />} />
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </Box>
           </Container>
           <Footer />
         </Box>

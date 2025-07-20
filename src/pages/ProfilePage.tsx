@@ -70,8 +70,8 @@ const ProfilePage = () => {
 
   return (
     <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
-      <Paper elevation={3} sx={{ p: 4, minWidth: 350 }}>
-        <Typography variant="h5" mb={2}>Profile</Typography>
+      <Paper elevation={3} sx={{ p: 4, minWidth: 350, width: '100%', maxWidth: 500 }}>
+        <Typography variant="h5" mb={2} textAlign="center">Profile</Typography>
         {error && <Alert severity="error">{error}</Alert>}
         {info && <Alert severity="success">{info}</Alert>}
         <Stack spacing={2}>
@@ -90,7 +90,7 @@ const ProfilePage = () => {
           ) : (
             <Button variant="outlined" onClick={() => setEdit(true)}>Edit</Button>
           )}
-          <Button onClick={() => navigate('/')}>Back</Button>
+          <Button onClick={() => navigate('/')}>Back to Home</Button>
         </Stack>
       </Paper>
     </Box>
