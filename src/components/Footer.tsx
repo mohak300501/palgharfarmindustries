@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { db } from '../firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { Box, Typography, Link, Stack, Paper, IconButton } from '@mui/material';
 import { Email } from '@mui/icons-material';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -9,26 +9,23 @@ const Footer = () => {
   const [stats, setStats] = useState({ members: 0, communities: 0, villages: 0 });
 
   useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const statsDoc = await getDoc(doc(db, 'stats', 'public'));
+        if (statsDoc.exists()) {
+          const data = statsDoc.data();
+          setStats({
+            members: typeof data.members === 'number' ? data.members : 0,
+            communities: typeof data.communities === 'number' ? data.communities : 0,
+            villages: typeof data.villages === 'number' ? data.villages : 0,
+          });
+        }
+      } catch (err) {
+        console.error('Error loading stats:', err);
+      }
+    };
     loadStats();
   }, []);
-
-  const loadStats = async () => {
-    try {
-      const profilesSnap = await getDocs(collection(db, 'profiles'));
-      const communitiesSnap = await getDocs(collection(db, 'communities'));
-      
-      const profiles = profilesSnap.docs.map(doc => doc.data());
-      const communities = communitiesSnap.docs.map(doc => doc.data());
-      
-      const totalMembers = profiles.length;
-      const totalCommunities = communities.length;
-      const totalVillages = new Set(profiles.map(p => p.village).filter(Boolean)).size;
-      
-      setStats({ members: totalMembers, communities: totalCommunities, villages: totalVillages });
-    } catch (err) {
-      console.error('Error loading stats:', err);
-    }
-  };
 
   const currentYear = new Date().getFullYear();
 

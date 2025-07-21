@@ -1,69 +1,35 @@
-# React + TypeScript + Vite
+# Dahanu Farm Industries Portal
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Dahanu Farm Industries Portal is a community-driven platform for managing and engaging with local farm communities. The portal provides features for members, community admins, and platform administrators, including:
 
-Currently, two official plugins are available:
+- Community creation and management
+- Member registration and profiles
+- Posting and commenting within communities
+- Public statistics (members, communities, villages)
+- Admin dashboard for managing users and communities
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- **Community Management:** Create, edit, and delete communities (admin only)
+- **Membership:** Join or leave communities, manage your profile
+- **Posts & Comments:** Share posts and comments within communities
+- **Statistics:** Public stats for total members, communities, and villages
+- **Admin Tools:** Admin dashboard for user and community management
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Updating Public Stats
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+To update the public stats (members, communities, villages) shown in the footer:
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- Stats are updated automatically every hour via GitHub Actions (see `.github/workflows/update-stats.yml`).
+- You can also run the update manually:
+  1. Add your Firebase Admin SDK JSON as the `FIREBASE_ADMIN_SDK` secret in your GitHub repo settings.
+  2. Run the GitHub Actions workflow manually from the Actions tab.
+  3. Or, run `node updateStats.js` locally with the appropriate environment variable set.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Development
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- The portal is built with React, TypeScript, and Vite. For framework-specific setup and configuration, see `VITE_README.md`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## License
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+MIT
