@@ -20,4 +20,4 @@ jobs:
       - name: Run updateStats.js
         env:
           FIREBASE_ADMIN_SDK: ${{ secrets.FIREBASE_ADMIN_SDK }}
-        run: node updateStats.js 
+        run: node updateStats.cjs 

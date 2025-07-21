@@ -55,7 +55,7 @@ const Footer = () => {
             <Email />
           </IconButton>
           <IconButton 
-            href="https://github.com/your-repo" 
+            href="https://github.com/mohak300501/dahanufarmindustries" 
             target="_blank" 
             color="inherit" 
             size="small"
