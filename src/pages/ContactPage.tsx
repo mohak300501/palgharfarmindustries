@@ -55,7 +55,7 @@ const ContactPage = () => {
                   <Email color="primary" sx={{ mr: 2 }} />
                   <Box>
                     <Typography variant="subtitle2" color="primary">Email</Typography>
-                    <Typography>info@dahanufarmindustries.com</Typography>
+                    <Typography>info@palgharfarmindustries.com</Typography>
                   </Box>
                 </Box>
                 
@@ -72,8 +72,8 @@ const ContactPage = () => {
                   <Box>
                     <Typography variant="subtitle2" color="primary">Address</Typography>
                     <Typography>
-                      Dahanu Farm Industries<br />
-                      Dahanu, Maharashtra<br />
+                      Palghar Farm Industries<br />
+                      Palghar, Maharashtra<br />
                       India - 401601
                     </Typography>
                   </Box>

@@ -1,6 +1,6 @@
-# Dahanu Farm Industries Portal
+# Palghar Farm Industries Portal
 
-Dahanu Farm Industries Portal is a community-driven platform for managing and engaging with local farm communities. The portal provides features for members, community admins, and platform administrators, including:
+Palghar Farm Industries Portal is a community-driven platform for managing and engaging with local farm communities. The portal provides features for members, community admins, and platform administrators, including:
 
 - Community creation and management
 - Member registration and profiles

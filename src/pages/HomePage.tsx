@@ -44,7 +44,7 @@ const HomePage = () => {
           </Stack>
         ) : (
           <Stack spacing={2} alignItems="center">
-            <Typography variant="h5">Welcome to Dahanu Farm Industries Portal</Typography>
+            <Typography variant="h5">Welcome to Palghar Farm Industries Portal</Typography>
             <Typography variant="body1" color="text.secondary">
               Browse communities using the navigation bar above. Login to join communities and interact with posts.
             </Typography>

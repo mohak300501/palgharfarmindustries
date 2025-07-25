@@ -17,7 +17,7 @@ const TermsPage = () => {
             1. Acceptance of Terms
           </Typography>
           <Typography paragraph>
-            By accessing and using the Dahanu Farm Industries Portal, you accept and agree to be bound by the terms 
+            By accessing and using the Palghar Farm Industries Portal, you accept and agree to be bound by the terms 
             and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
           </Typography>
 
@@ -26,7 +26,7 @@ const TermsPage = () => {
           </Typography>
           <Typography paragraph>
             Permission is granted to temporarily download one copy of the materials (information or software) 
-            on Dahanu Farm Industries Portal for personal, non-commercial transitory viewing only. This is the 
+            on Palghar Farm Industries Portal for personal, non-commercial transitory viewing only. This is the 
             grant of a license, not a transfer of title, and under this license you may not:
           </Typography>
           <Box component="ul" sx={{ pl: 3 }}>
@@ -86,7 +86,7 @@ const TermsPage = () => {
             6. Disclaimer
           </Typography>
           <Typography paragraph>
-            The materials on Dahanu Farm Industries Portal are provided on an 'as is' basis. We make no 
+            The materials on Palghar Farm Industries Portal are provided on an 'as is' basis. We make no 
             warranties, expressed or implied, and hereby disclaim and negate all other warranties including 
             without limitation, implied warranties or conditions of merchantability, fitness for a particular 
             purpose, or non-infringement of intellectual property or other violation of rights.
@@ -96,7 +96,7 @@ const TermsPage = () => {
             7. Limitations
           </Typography>
           <Typography paragraph>
-            In no event shall Dahanu Farm Industries or its suppliers be liable for any damages (including, 
+            In no event shall Palghar Farm Industries or its suppliers be liable for any damages (including, 
             without limitation, damages for loss of data or profit, or due to business interruption) arising 
             out of the use or inability to use the portal, even if we or our authorized representative has 
             been notified orally or in writing of the possibility of such damage.
@@ -106,7 +106,7 @@ const TermsPage = () => {
             8. Revisions and Errata
           </Typography>
           <Typography paragraph>
-            The materials appearing on Dahanu Farm Industries Portal could include technical, typographical, 
+            The materials appearing on Palghar Farm Industries Portal could include technical, typographical, 
             or photographic errors. We do not warrant that any of the materials on the portal are accurate, 
             complete, or current. We may make changes to the materials contained on the portal at any time 
             without notice.
@@ -116,9 +116,9 @@ const TermsPage = () => {
             9. Links
           </Typography>
           <Typography paragraph>
-            Dahanu Farm Industries has not reviewed all of the sites linked to its portal and is not 
+            Palghar Farm Industries has not reviewed all of the sites linked to its portal and is not 
             responsible for the contents of any such linked site. The inclusion of any link does not imply 
-            endorsement by Dahanu Farm Industries of the site. Use of any such linked website is at the 
+            endorsement by Palghar Farm Industries of the site. Use of any such linked website is at the 
             user's own risk.
           </Typography>
 

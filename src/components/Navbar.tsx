@@ -144,7 +144,7 @@ const Navbar = () => {
             sx={{ flexGrow: 1, cursor: 'pointer' }}
             onClick={() => navigate('/')}
           >
-            🌾 Dahanu Farm Industries
+            🌾 Palghar Farm Industries
           </Typography>
 
           {/* Desktop Community Tabs */}

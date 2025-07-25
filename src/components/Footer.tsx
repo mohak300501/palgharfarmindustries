@@ -32,7 +32,7 @@ const Footer = () => {
   return (
     <Paper sx={{ mt: 4, p: 3, bgcolor: 'grey.100' }}>
       <Box textAlign="center">
-        <Typography variant="h6" mb={2}>Dahanu Farm Industries Portal</Typography>
+        <Typography variant="h6" mb={2}>Palghar Farm Industries Portal</Typography>
         
         <Stack direction="row" spacing={4} justifyContent="center" mb={2}>
           <Typography>Members: {stats.members}</Typography>
@@ -55,7 +55,7 @@ const Footer = () => {
             <Email />
           </IconButton>
           <IconButton 
-            href="https://github.com/mohak300501/dahanufarmindustries" 
+            href="https://github.com/mohak300501/palgharfarmindustries" 
             target="_blank" 
             color="inherit" 
             size="small"
@@ -66,7 +66,7 @@ const Footer = () => {
         </Stack>
         
         <Typography variant="body2" color="text.secondary" mt={2}>
-          © {currentYear} Dahanu Farm Industries. All rights reserved.
+          © {currentYear} Palghar Farm Industries. All rights reserved.
         </Typography>
       </Box>
     </Paper>

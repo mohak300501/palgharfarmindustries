@@ -5,7 +5,7 @@ const AboutPage = () => {
     <Container maxWidth="md">
       <Box sx={{ py: 4 }}>
         <Typography variant="h3" component="h1" gutterBottom textAlign="center" color="primary">
-          About Dahanu Farm Industries Portal
+          About Palghar Farm Industries Portal
         </Typography>
         
         <Paper sx={{ p: 4, mt: 3 }}>
@@ -13,8 +13,8 @@ const AboutPage = () => {
             Our Mission
           </Typography>
           <Typography paragraph>
-            The Dahanu Farm Industries Portal is a comprehensive digital platform designed to connect 
-            and empower the farming community in the Dahanu region. Our mission is to facilitate 
+            The Palghar Farm Industries Portal is a comprehensive digital platform designed to connect 
+            and empower the farming community in the Palghar region. Our mission is to facilitate 
             knowledge sharing, community building, and sustainable agricultural practices among local farmers.
           </Typography>
 
@@ -47,7 +47,7 @@ const AboutPage = () => {
           </Typography>
           <Typography paragraph>
             We are committed to promoting sustainable agriculture, fostering community spirit, 
-            and supporting the growth and development of the farming sector in Dahanu. 
+            and supporting the growth and development of the farming sector in Palghar. 
             Our platform emphasizes collaboration, knowledge sharing, and mutual support 
             among all members of the agricultural community.
           </Typography>
