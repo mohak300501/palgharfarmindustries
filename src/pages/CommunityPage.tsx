@@ -54,8 +54,8 @@ const CommunityPage = () => {
     }
   };
 
-  const handleViewPosts = () => {
-    navigate(`/c/${communityName}/posts`);
+  const handleViewPosts = (postType: string) => {
+    navigate(`/c/${communityName}/p/${postType}`);
   };
 
   if (loading) return <Box textAlign="center" mt={8}><Alert severity="info">Loading...</Alert></Box>;
@@ -89,40 +89,21 @@ const CommunityPage = () => {
         </Stack>
 
         <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap">
-          <Button 
-            variant="contained" 
-            size="large"
-            onClick={handleViewPosts}
-          >
-            View Posts
+          <Button variant="contained" onClick={() => handleViewPosts('expert')}>
+            Experts' Corner
           </Button>
-          
-          {!user ? (
-            <Button 
-              variant="outlined" 
-              size="large"
-              onClick={() => navigate('/auth')}
-            >
-              Login to Join
-            </Button>
-          ) : !isJoined ? (
-            <Button 
-              variant="outlined" 
-              size="large"
-              onClick={handleJoinCommunity}
-            >
-              Join Community
-            </Button>
-          ) : (
-            <Button 
-              variant="outlined" 
-              size="large"
-              color="success"
-              disabled
-            >
-              Already Joined
-            </Button>
-          )}
+          <Button variant="contained" onClick={() => handleViewPosts('scheme')}>
+            Schemes and Subsidies
+          </Button>
+          <Button variant="contained" onClick={() => handleViewPosts('success')}>
+            Success Stories
+          </Button>
+          <Button variant="contained" onClick={() => handleViewPosts('product')}>
+            Products and Services
+          </Button>
+          <Button variant="contained" onClick={() => handleViewPosts('tourism')}>
+            Tourism Venues
+          </Button>
         </Stack>
       </Paper>
 
@@ -141,4 +122,4 @@ const CommunityPage = () => {
   );
 };
 
-export default CommunityPage; 
+export default CommunityPage;

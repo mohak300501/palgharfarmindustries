@@ -6,28 +6,48 @@ import { communityService } from '../services/communityService';
 import type { Community, Post } from '../types';
 import {
   CommunitySidebar,
-  PostsList,
   CommunityLayout,
+  LeaveCommunityDialog,
+} from '../components/community';
+import {
+  PostsList,
   CreatePostDialog,
   EditPostDialog,
   CommentDialog,
-  LeaveCommunityDialog
-} from '../components/community';
-import { collection, getDocs, query, where, deleteDoc, doc } from 'firebase/firestore';
+} from '../components/posts';
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  deleteDoc,
+  doc,
+} from 'firebase/firestore';
 import { db } from '../firebase';
 
 const PostsPage = () => {
-  const { communityName } = useParams();
-  const { user, userRole, isJoined, loading, setUserRole, setIsJoined } = useAuth(communityName);
+  const { communityName, postType } = useParams();
+  const { user, userRole, isJoined, loading, setUserRole, setIsJoined } =
+    useAuth(communityName);
   const [posts, setPosts] = useState<Post[]>([]);
   const [communityData, setCommunityData] = useState<Community | null>(null);
   const [memberCount, setMemberCount] = useState(0);
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
   const [createDialog, setCreateDialog] = useState(false);
-  const [editDialog, setEditDialog] = useState<{open: boolean, post: Post | null}>({open: false, post: null});
-  const [commentDialog, setCommentDialog] = useState<{open: boolean, postId: string}>({open: false, postId: ''});
-  const [newPost, setNewPost] = useState({ title: '', content: '' });
+  const [editDialog, setEditDialog] = useState<{
+    open: boolean;
+    post: Post | null;
+  }>({ open: false, post: null });
+  const [commentDialog, setCommentDialog] = useState<{
+    open: boolean;
+    postId: string;
+  }>({ open: false, postId: '' });
+  const [newPost, setNewPost] = useState({
+    title: '',
+    content: '',
+    category: postType || 'expert',
+  });
   const [newComment, setNewComment] = useState('');
   const [leaveDialog, setLeaveDialog] = useState(false);
   const [confirmName, setConfirmName] = useState('');
@@ -47,7 +67,7 @@ const PostsPage = () => {
     if (communityData) {
       loadPosts();
     }
-  }, [communityData]);
+  }, [communityData, postType]);
 
   const loadCommunityData = async () => {
     if (!communityName) return;
@@ -69,18 +89,28 @@ const PostsPage = () => {
   const loadPosts = async () => {
     if (!communityData) return;
     try {
-      const postsData = await communityService.loadPosts(communityData.id);
+      const postsData = await communityService.loadPosts(
+        communityData.id,
+        postType
+      );
       setPosts(postsData);
       // Fetch all comments for these posts
       const postIds = postsData.map((p) => p.id);
       if (postIds.length > 0) {
-        const q = query(collection(db, 'comments'), where('postId', 'in', postIds));
+        const q = query(
+          collection(db, 'comments'),
+          where('postId', 'in', postIds)
+        );
         const snap = await getDocs(q);
-        setComments(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setComments(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
         // Fetch all likes for these posts
-        const likeQ = query(collection(db, 'likes'), where('targetType', '==', 'post'), where('targetId', 'in', postIds));
+        const likeQ = query(
+          collection(db, 'likes'),
+          where('targetType', '==', 'post'),
+          where('targetId', 'in', postIds)
+        );
         const likeSnap = await getDocs(likeQ);
-        setLikes(likeSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setLikes(likeSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
       } else {
         setComments([]);
         setLikes([]);
@@ -101,7 +131,11 @@ const PostsPage = () => {
       await communityService.joinCommunity(user.uid, communityName!);
       setIsJoined(true);
       setUserRole('member');
-      setInfo(`Joined ${communityData?.name || communityName} community! You can now interact with posts and comments.`);
+      setInfo(
+        `Joined ${
+          communityData?.name || communityName
+        } community! You can now interact with posts and comments.`
+      );
     } catch (err: any) {
       setError(err.message);
     }
@@ -118,7 +152,11 @@ const PostsPage = () => {
       await communityService.leaveCommunity(user!.uid, communityName!);
       setIsJoined(false);
       setUserRole('user');
-      setInfo(`Left ${communityData?.name || communityName} community. All your interactions have been deleted.`);
+      setInfo(
+        `Left ${
+          communityData?.name || communityName
+        } community. All your interactions have been deleted.`
+      );
       setLeaveDialog(false);
       setConfirmName('');
     } catch (err: any) {
@@ -133,17 +171,22 @@ const PostsPage = () => {
       const postData = {
         title: newPost.title,
         content: newPost.content,
+        category: newPost.category,
         authorId: user.uid,
         authorName: user.displayName || user.email,
         createdAt: new Date(),
         likes: [],
         dislikes: [],
-        comments: []
+        comments: [],
       };
       await communityService.createPost(communityData.id, postData);
       setInfo('Post created!');
       setCreateDialog(false);
-      setNewPost({ title: '', content: '' });
+      setNewPost({
+        title: '',
+        content: '',
+        category: postType || 'expert',
+      });
       loadPosts();
     } catch (err: any) {
       setError(err.message);
@@ -160,9 +203,13 @@ const PostsPage = () => {
         authorName: user.displayName || user.email,
         createdAt: new Date(),
       };
-      await communityService.addComment(communityData.id, commentDialog.postId, commentData);
+      await communityService.addComment(
+        communityData.id,
+        commentDialog.postId,
+        commentData
+      );
       setInfo('Comment added!');
-      setCommentDialog({open: false, postId: ''});
+      setCommentDialog({ open: false, postId: '' });
       setNewComment('');
       loadPosts();
     } catch (err: any) {
@@ -205,7 +252,8 @@ const PostsPage = () => {
     try {
       await communityService.updatePost(editDialog.post.id, {
         title: editDialog.post.title,
-        content: editDialog.post.content
+        content: editDialog.post.content,
+        category: editDialog.post.category,
       });
       setInfo('Post updated!');
       setEditDialog({ open: false, post: null });
@@ -231,29 +279,41 @@ const PostsPage = () => {
 
   const getFilteredAndSortedPosts = () => {
     let filteredPosts = [...posts];
-    
+
     // Filter by creator if enabled and user is creator
     if (filterByCreator && userRole === 'creator' && user) {
-      filteredPosts = filteredPosts.filter(post => post.authorId === user.uid);
+      filteredPosts = filteredPosts.filter(
+        (post) => post.authorId === user.uid
+      );
     }
-    
+
     // Sort posts by date
     filteredPosts.sort((a, b) => {
       const dateA = a.createdAt?.toDate?.() || new Date(a.createdAt);
       const dateB = b.createdAt?.toDate?.() || new Date(b.createdAt);
-      
+
       if (sortOrder === 'newest') {
         return dateB.getTime() - dateA.getTime();
       } else {
         return dateA.getTime() - dateB.getTime();
       }
     });
-    
+
     return filteredPosts;
   };
 
-  if (loading) return <Box textAlign="center" mt={8}><Alert severity="info">Loading...</Alert></Box>;
-  if (!communityName || !communityData) return <Box textAlign="center" mt={8}><Alert severity="error">Community not found</Alert></Box>;
+  if (loading)
+    return (
+      <Box textAlign="center" mt={8}>
+        <Alert severity="info">Loading...</Alert>
+      </Box>
+    );
+  if (!communityName || !communityData)
+    return (
+      <Box textAlign="center" mt={8}>
+        <Alert severity="error">Community not found</Alert>
+      </Box>
+    );
 
   const sidebar = (
     <CommunitySidebar
@@ -271,8 +331,8 @@ const PostsPage = () => {
     <Box>
       {/* Back to Community Button */}
       <Box mb={2}>
-        <Button 
-          variant="outlined" 
+        <Button
+          variant="outlined"
           onClick={() => navigate(`/c/${communityName}`)}
           sx={{ mb: 2 }}
         >
@@ -280,9 +340,17 @@ const PostsPage = () => {
         </Button>
       </Box>
 
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-      {info && <Alert severity="success" sx={{ mb: 2 }}>{info}</Alert>}
-      
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+      {info && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          {info}
+        </Alert>
+      )}
+
       <PostsList
         posts={getFilteredAndSortedPosts()}
         user={user}
@@ -322,21 +390,30 @@ const PostsPage = () => {
         open={createDialog}
         onClose={() => setCreateDialog(false)}
         newPost={newPost}
-        onNewPostChange={(field, value) => setNewPost({...newPost, [field]: value})}
+        onNewPostChange={(field, value) =>
+          setNewPost({ ...newPost, [field]: value })
+        }
         onCreatePost={handleCreatePost}
       />
 
       <EditPostDialog
         open={editDialog.open}
-        onClose={() => setEditDialog({open: false, post: null})}
+        onClose={() => setEditDialog({ open: false, post: null })}
         post={editDialog.post}
-        onPostChange={(field, value) => setEditDialog({...editDialog, post: editDialog.post ? {...editDialog.post, [field]: value} : null})}
+        onPostChange={(field, value) =>
+          setEditDialog({
+            ...editDialog,
+            post: editDialog.post
+              ? { ...editDialog.post, [field]: value }
+              : null,
+          })
+        }
         onSavePost={handleSavePost}
       />
 
       <CommentDialog
         open={commentDialog.open}
-        onClose={() => setCommentDialog({open: false, postId: ''})}
+        onClose={() => setCommentDialog({ open: false, postId: '' })}
         comment={newComment}
         onCommentChange={setNewComment}
         onAddComment={handleAddComment}
@@ -345,4 +422,4 @@ const PostsPage = () => {
   );
 };
 
-export default PostsPage; 
+export default PostsPage;

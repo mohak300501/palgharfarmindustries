@@ -1,20 +1,22 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 
 interface CreateCommunityDialogProps {
   open: boolean;
   onClose: () => void;
-  newCommunity: { name: string; description: string; info: string };
+  newCommunity: { name: string; description: string; info: string; category: string };
   onNewCommunityChange: (field: string, value: string) => void;
   onCreateCommunity: () => void;
 }
 
-const CreateCommunityDialog = ({ 
-  open, 
-  onClose, 
-  newCommunity, 
-  onNewCommunityChange, 
-  onCreateCommunity 
+const CreateCommunityDialog = ({
+  open,
+  onClose,
+  newCommunity,
+  onNewCommunityChange,
+  onCreateCommunity
 }: CreateCommunityDialogProps) => {
+  const categories = {'animal': 'Animal-based', 'plant': 'Plant-based'};
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Create New Community</DialogTitle>
@@ -37,6 +39,20 @@ const CreateCommunityDialog = ({
           onChange={e => onNewCommunityChange('description', e.target.value)}
           required
         />
+        <FormControl fullWidth margin="normal" required>
+          <InputLabel id="category-select-label">Category</InputLabel>
+          <Select
+            labelId="category-select-label"
+            id="category-select"
+            value={newCommunity.category}
+            label="Category"
+            onChange={e => onNewCommunityChange('category', e.target.value)}
+          >
+            {Object.entries(categories).map(([category, label]) => (
+              <MenuItem key={category} value={category}>{label}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           label="Community Info"
           fullWidth
@@ -57,4 +73,4 @@ const CreateCommunityDialog = ({
   );
 };
 
-export default CreateCommunityDialog; 
+export default CreateCommunityDialog;

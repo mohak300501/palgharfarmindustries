@@ -1,23 +1,25 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import type { Community } from '../../types';
 
 interface EditCommunityDialogProps {
   open: boolean;
   onClose: () => void;
   community: Community | null;
-  editedCommunity: { name: string; description: string; info: string };
+  editedCommunity: { name: string; description: string; info: string; category: string };
   onEditedCommunityChange: (field: string, value: string) => void;
   onUpdateCommunity: () => void;
 }
 
-const EditCommunityDialog = ({ 
-  open, 
-  onClose, 
+const EditCommunityDialog = ({
+  open,
+  onClose,
   community,
-  editedCommunity, 
-  onEditedCommunityChange, 
-  onUpdateCommunity 
+  editedCommunity,
+  onEditedCommunityChange,
+  onUpdateCommunity
 }: EditCommunityDialogProps) => {
+  const categories = {'animal': 'Animal-based', 'plant': 'Plant-based'};
+
   if (!community) return null;
 
   return (
@@ -42,6 +44,20 @@ const EditCommunityDialog = ({
           onChange={e => onEditedCommunityChange('description', e.target.value)}
           required
         />
+        <FormControl fullWidth margin="normal" required>
+          <InputLabel id="category-select-label">Category</InputLabel>
+          <Select
+            labelId="category-select-label"
+            id="category-select"
+            value={editedCommunity.category}
+            label="Category"
+            onChange={e => onEditedCommunityChange('category', e.target.value)}
+          >
+            {Object.entries(categories).map(([category, label]) => (
+              <MenuItem key={category} value={category}>{label}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           label="Community Info"
           fullWidth
@@ -62,4 +78,4 @@ const EditCommunityDialog = ({
   );
 };
 
-export default EditCommunityDialog; 
+export default EditCommunityDialog;

@@ -8,6 +8,7 @@ export interface Post {
   likes: string[];
   dislikes: string[];
   comments: Comment[];
+  category: string;
 }
 
 export interface Comment {
@@ -26,6 +27,7 @@ export interface Community {
   description: string;
   info?: string;
   createdAt: any;
+  category: string;
 }
 
 export interface Member {
@@ -33,4 +35,4 @@ export interface Member {
   profile: any;
   memberships: string[];
   role: string;
-} 
+}

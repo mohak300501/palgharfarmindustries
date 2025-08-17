@@ -18,8 +18,9 @@ import {
   MenuItem,
   useTheme,
   useMediaQuery,
+  Collapse,
 } from '@mui/material';
-import { Menu as MenuIcon } from '@mui/icons-material';
+import { Menu as MenuIcon, Add, Remove } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 interface Community {
@@ -27,14 +28,23 @@ interface Community {
   name: string;
   description: string;
   createdAt: any;
+  category: string;
+}
+
+interface GroupedCommunities {
+  [key: string]: Community[];
 }
 
 const Navbar = () => {
   const [user, setUser] = useState<any>(null);
-  const [communities, setCommunities] = useState<Community[]>([]);
+  const [groupedCommunities, setGroupedCommunities] = useState<GroupedCommunities>({});
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [userRole, setUserRole] = useState('user');
+  const [openCategories, setOpenCategories] = useState<string[]>([]);
+  const [desktopMenuAnchor, setDesktopMenuAnchor] = useState<null | HTMLElement>(null);
+  const [desktopMenuCategory, setDesktopMenuCategory] = useState<string | null>(null);
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
@@ -44,7 +54,6 @@ const Navbar = () => {
     const unsub = onAuthStateChanged(auth, async (u) => {
       setUser(u);
       if (u) {
-        // Check user role
         const profileRef = doc(db, 'profiles', u.uid);
         const profileSnap = await getDoc(profileRef);
         const profile = profileSnap.exists() ? profileSnap.data() : {};
@@ -67,7 +76,15 @@ const Navbar = () => {
         id: doc.id,
         ...doc.data()
       } as Community));
-      setCommunities(communitiesData);
+      const grouped = communitiesData.reduce((acc, community) => {
+        const category = community.category || 'Uncategorized';
+        if (!acc[category]) {
+          acc[category] = [];
+        }
+        acc[category].push(community);
+        return acc;
+      }, {} as GroupedCommunities);
+      setGroupedCommunities(grouped);
     } catch (err) {
       console.error('Error loading communities:', err);
     }
@@ -96,29 +113,56 @@ const Navbar = () => {
     if (isMobile) {
       setMobileOpen(false);
     }
+    setDesktopMenuAnchor(null);
   };
 
   const isActiveCommunity = (community: Community) => {
     return location.pathname === `/c/${community.name}`;
   };
 
+  const toggleCategory = (category: string) => {
+    setOpenCategories(prev =>
+      prev.includes(category) ? prev.filter(c => c !== category) : [...prev, category]
+    );
+  };
+
+  const handleDesktopMenuOpen = (event: React.MouseEvent<HTMLElement>, category: string) => {
+    setDesktopMenuAnchor(event.currentTarget);
+    setDesktopMenuCategory(category);
+  };
+
+  const handleDesktopMenuClose = () => {
+    setDesktopMenuAnchor(null);
+    setDesktopMenuCategory(null);
+  };
+
   const drawer = (
     <Box>
-      <Typography variant="h6" sx={{ p: 2, textAlign: 'center' }}>
-        Communities
+      <Typography variant="h6" sx={{ p: 2, textAlign: 'left' }}>
+        Categories
       </Typography>
       <List>
-        {communities.map((community) => (
-          <ListItemButton
-            key={community.id}
-            onClick={() => handleCommunityClick(community)}
-            selected={isActiveCommunity(community)}
-          >
-            <ListItemText 
-              primary={community.name.charAt(0).toUpperCase() + community.name.slice(1)}
-              sx={{ textAlign: 'center' }}
-            />
-          </ListItemButton>
+        {Object.keys(groupedCommunities).map(category => (
+          <div key={category}>
+            <ListItemButton onClick={() => toggleCategory(category)}>
+              <ListItemText primary={category} />
+              {openCategories.includes(category) ? <Remove /> : <Add />}
+            </ListItemButton>
+            <Collapse in={openCategories.includes(category)} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {groupedCommunities[category].map(community => (
+                  <ListItemButton
+                    key={community.id}
+                    onClick={() => handleCommunityClick(community)}
+                    selected={isActiveCommunity(community)}
+                    sx={{ pl: 4 }}
+                  >
+                    <ListItemText primary={community.name.charAt(0).toUpperCase() + community.name.slice(1)} />
+                  </ListItemButton>
+                ))}
+              </List>
+            </Collapse>
+          </div>
         ))}
       </List>
     </Box>
@@ -147,27 +191,38 @@ const Navbar = () => {
             🌾 Palghar Farm Industries
           </Typography>
 
-          {/* Desktop Community Tabs */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, flexGrow: 1, justifyContent: 'center' }}>
-            {communities.map((community) => (
-              <Button
-                key={community.id}
-                color="inherit"
-                onClick={() => handleCommunityClick(community)}
-                sx={{
-                  mx: 0.5,
-                  backgroundColor: isActiveCommunity(community) ? 'rgba(255,255,255,0.1)' : 'transparent',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.1)',
-                  },
-                }}
-              >
-                {community.name.charAt(0).toUpperCase() + community.name.slice(1)}
-              </Button>
+            {Object.keys(groupedCommunities).map(category => (
+              <Box key={category} onMouseLeave={handleDesktopMenuClose}>
+                <Button
+                  color="inherit"
+                  onMouseEnter={(e) => handleDesktopMenuOpen(e, category)}
+                  sx={{
+                    mx: 0.5,
+                  }}
+                >
+                  {category}
+                </Button>
+                <Menu
+                  anchorEl={desktopMenuAnchor}
+                  open={Boolean(desktopMenuAnchor) && desktopMenuCategory === category}
+                  onClose={handleDesktopMenuClose}
+                  MenuListProps={{ onMouseLeave: handleDesktopMenuClose }}
+                >
+                  {groupedCommunities[category].map(community => (
+                    <MenuItem
+                      key={community.id}
+                      onClick={() => handleCommunityClick(community)}
+                      selected={isActiveCommunity(community)}
+                    >
+                      {community.name.charAt(0).toUpperCase() + community.name.slice(1)}
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </Box>
             ))}
           </Box>
 
-          {/* User Menu */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {user ? (
               <>
@@ -190,6 +245,7 @@ const Navbar = () => {
                     vertical: 'top',
                     horizontal: 'right',
                   }}
+
                   keepMounted
                   transformOrigin={{
                     vertical: 'top',
@@ -218,13 +274,12 @@ const Navbar = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Mobile Drawer */}
       <Drawer
         variant="temporary"
         open={mobileOpen}
         onClose={handleDrawerToggle}
         ModalProps={{
-          keepMounted: true, // Better open performance on mobile.
+          keepMounted: true,
         }}
         sx={{
           display: { xs: 'block', md: 'none' },
@@ -237,4 +292,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;

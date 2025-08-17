@@ -24,9 +24,9 @@ const AdminPage = () => {
   const [deleteCommunityDialog, setDeleteCommunityDialog] = useState<{open: boolean, community: Community | null, step: number}>({open: false, community: null, step: 1});
   const [confirmCommunityName, setConfirmCommunityName] = useState('');
   const [newCommunityDialog, setNewCommunityDialog] = useState(false);
-  const [newCommunity, setNewCommunity] = useState({ name: '', description: '', info: '' });
+  const [newCommunity, setNewCommunity] = useState({ name: '', description: '', info: '', category: '' });
   const [editCommunityDialog, setEditCommunityDialog] = useState<{open: boolean, community: Community | null}>({open: false, community: null});
-  const [editedCommunity, setEditedCommunity] = useState({ name: '', description: '', info: '' });
+  const [editedCommunity, setEditedCommunity] = useState({ name: '', description: '', info: '', category: '' });
   const [deleteMemberDialog, setDeleteMemberDialog] = useState<{open: boolean, member: Member | null, confirmName: string, error: string}>({open: false, member: null, confirmName: '', error: ''});
   const navigate = useNavigate();
 
@@ -123,16 +123,16 @@ const AdminPage = () => {
   };
 
   const handleCreateCommunity = async () => {
-    if (!newCommunity.name.trim() || !newCommunity.description.trim()) {
+    if (!newCommunity.name.trim() || !newCommunity.description.trim() || !newCommunity.category.trim()) {
       setError('Please fill in all required fields');
       return;
     }
     
     try {
-      await adminService.createCommunity(newCommunity.name, newCommunity.description, newCommunity.info);
+      await adminService.createCommunity(newCommunity.name, newCommunity.description, newCommunity.info, newCommunity.category);
       setInfo('Community created successfully!');
       setNewCommunityDialog(false);
-      setNewCommunity({ name: '', description: '', info: '' });
+      setNewCommunity({ name: '', description: '', info: '', category: '' });
       loadData();
     } catch (err: any) {
       setError(err.message);
@@ -143,7 +143,8 @@ const AdminPage = () => {
     setEditedCommunity({
       name: community.name,
       description: community.description,
-      info: community.info || ''
+      info: community.info || '',
+      category: community.category
     });
     setEditCommunityDialog({ open: true, community });
   };
@@ -151,7 +152,7 @@ const AdminPage = () => {
   const handleUpdateCommunity = async () => {
     if (!editCommunityDialog.community) return;
     
-    if (!editedCommunity.name.trim() || !editedCommunity.description.trim()) {
+    if (!editedCommunity.name.trim() || !editedCommunity.description.trim() || !editedCommunity.category.trim()) {
       setError('Please fill in all required fields');
       return;
     }
@@ -160,11 +161,12 @@ const AdminPage = () => {
       await adminService.updateCommunity(editCommunityDialog.community.id, {
         name: editedCommunity.name,
         description: editedCommunity.description,
-        info: editedCommunity.info
+        info: editedCommunity.info,
+        category: editedCommunity.category
       });
       setInfo('Community updated successfully!');
       setEditCommunityDialog({ open: false, community: null });
-      setEditedCommunity({ name: '', description: '', info: '' });
+      setEditedCommunity({ name: '', description: '', info: '', category: '' });
       loadData();
     } catch (err: any) {
       setError(err.message);
@@ -306,4 +308,4 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage; 
+export default AdminPage;

@@ -21,9 +21,23 @@ export const communityService = {
   },
 
   // Load posts for a community (now from top-level 'posts' collection)
-  async loadPosts(communityId: string): Promise<Post[]> {
+  async loadPosts(communityId: string, postType?: string): Promise<Post[]> {
     try {
-      const q = query(collection(db, 'posts'), where('communityId', '==', communityId), orderBy('createdAt', 'desc'));
+      let q;
+      if (postType) {
+        q = query(
+          collection(db, 'posts'),
+          where('communityId', '==', communityId),
+          where('category', '==', postType),
+          orderBy('createdAt', 'desc')
+        );
+      } else {
+        q = query(
+          collection(db, 'posts'),
+          where('communityId', '==', communityId),
+          orderBy('createdAt', 'desc')
+        );
+      }
       const snap = await getDocs(q);
       return snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Post));
     } catch (err: any) {
@@ -132,4 +146,4 @@ export const communityService = {
       throw new Error(err.message);
     }
   }
-}; 
+};

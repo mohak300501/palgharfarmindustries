@@ -86,12 +86,13 @@ export const adminService = {
   },
 
   // Create community
-  async createCommunity(name: string, description: string, info: string): Promise<void> {
+  async createCommunity(name: string, description: string, info: string, category: string): Promise<void> {
     try {
       const communityData = {
         name: name.toLowerCase(),
         description,
         info,
+        category,
         createdAt: new Date()
       };
       await addDoc(collection(db, 'communities'), communityData);
@@ -101,7 +102,7 @@ export const adminService = {
   },
 
   // Update community
-  async updateCommunity(communityId: string, updates: { name?: string; description?: string; info?: string }): Promise<void> {
+  async updateCommunity(communityId: string, updates: { name?: string; description?: string; info?: string; category?: string }): Promise<void> {
     try {
       const communityRef = doc(db, 'communities', communityId);
       const updateData: any = {};
@@ -114,6 +115,9 @@ export const adminService = {
       }
       if (updates.info !== undefined) {
         updateData.info = updates.info;
+      }
+      if (updates.category !== undefined) {
+        updateData.category = updates.category;
       }
       
       await updateDoc(communityRef, updateData);
@@ -148,4 +152,4 @@ export const adminService = {
       throw new Error(err.message);
     }
   }
-}; 
+};

@@ -36,7 +36,7 @@ function App() {
               <Route path="/auth/*" element={<AuthPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/c/:communityName" element={<CommunityPage />} />
-              <Route path="/c/:communityName/posts" element={<PostsPage />} />
+              <Route path="/c/:communityName/p/:postType" element={<PostsPage />} />
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
