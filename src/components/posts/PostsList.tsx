@@ -8,6 +8,7 @@ interface PostsListProps {
   user: any;
   isJoined: boolean;
   userRole: string;
+  category: string;
   onLike: (postId: string, type: 'like' | 'dislike') => void;
   onComment: (postId: string) => void;
   onDelete: (postId: string) => void;
@@ -27,6 +28,7 @@ const PostsList = ({
   user,
   isJoined,
   userRole,
+  category,
   onLike,
   onComment,
   onDelete,
@@ -109,6 +111,7 @@ const PostsList = ({
               user={user}
               isJoined={isJoined}
               userRole={userRole}
+              category={category}
               onLike={onLike}
               onComment={onComment}
               onDelete={onDelete}

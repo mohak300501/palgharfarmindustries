@@ -352,6 +352,7 @@ const PostsPage = () => {
         user={user}
         isJoined={isJoined}
         userRole={userRole}
+        category={defPostCategory}
         onLike={handleLike}
         onComment={handleOpenCommentDialog}
         onDelete={handleDeletePost}
