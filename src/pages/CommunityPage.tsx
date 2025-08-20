@@ -8,11 +8,12 @@ import { postCategories } from '../services/categoryService';
 
 const CommunityPage = () => {
   const { communityName } = useParams();
-  const { user, isJoined, loading, setUserRole, setIsJoined } = useAuth(communityName);
+  const { loading } = useAuth(communityName);
   const [communityData, setCommunityData] = useState<Community | null>(null);
   const [memberCount, setMemberCount] = useState(0);
+  const [totalPostCount, setTotalPostCount] = useState(0);
   const [error, setError] = useState('');
-  const [info, setInfo] = useState('');
+  const [info] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,28 +29,14 @@ const CommunityPage = () => {
       if (community) {
         setCommunityData(community);
         // Load member count
-        const count = await communityService.getMemberCount(communityName);
-        setMemberCount(count);
+        const memberCount = await communityService.getMemberCount(communityName);
+        setMemberCount(memberCount);
+        // Load total post count
+        const postCount = await communityService.getTotalPostCount(community.id);
+        setTotalPostCount(postCount);
       } else {
         setError('Community not found');
       }
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
-
-  const handleJoinCommunity = async () => {
-    if (!user) {
-      setError('Please login to join this community');
-      return;
-    }
-    setError('');
-    setInfo('');
-    try {
-      await communityService.joinCommunity(user.uid, communityName!);
-      setIsJoined(true);
-      setUserRole('member');
-      setInfo(`Joined ${communityData?.name || communityName} community! You can now interact with posts and comments.`);
     } catch (err: any) {
       setError(err.message);
     }
@@ -78,13 +65,21 @@ const CommunityPage = () => {
           </Typography>
         )}
 
-        <Stack direction="row" spacing={2} justifyContent="center" mb={3}>
+        <Stack direction="row" spacing={12} justifyContent="center" mb={3}>
           <Box textAlign="center">
             <Typography variant="h5" color="primary">
               {memberCount}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Members
+            </Typography>
+          </Box>
+          <Box textAlign="center">
+            <Typography variant="h5" color="primary">
+              {totalPostCount}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Posts
             </Typography>
           </Box>
         </Stack>

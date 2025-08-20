@@ -145,5 +145,17 @@ export const communityService = {
     } catch (err: any) {
       throw new Error(err.message);
     }
+  },
+
+  // Get total post count for a community
+  async getTotalPostCount(communityId: string): Promise<number> {
+    try {
+      const postsRef = collection(db, 'posts');
+      const q = query(postsRef, where('communityId', '==', communityId));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.size;
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
   }
 };
