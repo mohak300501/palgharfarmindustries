@@ -136,6 +136,11 @@ const Navbar = () => {
     setDesktopMenuCategory(null);
   };
 
+  const categories: Record<string, string> = {
+    animal: "Animal-based",
+    plant: "Plant-based",
+  };
+
   const drawer = (
     <Box>
       <Typography variant="h6" sx={{ p: 2, textAlign: 'left' }}>
@@ -145,7 +150,7 @@ const Navbar = () => {
         {Object.keys(groupedCommunities).map(category => (
           <div key={category}>
             <ListItemButton onClick={() => toggleCategory(category)}>
-              <ListItemText primary={category} />
+              <ListItemText primary={categories[category].charAt(0).toUpperCase() + categories[category].slice(1)} />
               {openCategories.includes(category) ? <Remove /> : <Add />}
             </ListItemButton>
             <Collapse in={openCategories.includes(category)} timeout="auto" unmountOnExit>
@@ -201,7 +206,7 @@ const Navbar = () => {
                     mx: 0.5,
                   }}
                 >
-                  {category}
+                  {categories[category]}
                 </Button>
                 <Menu
                   anchorEl={desktopMenuAnchor}

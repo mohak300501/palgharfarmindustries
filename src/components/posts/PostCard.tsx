@@ -8,6 +8,7 @@ interface PostCardProps {
   user: any;
   isJoined: boolean;
   userRole: string;
+  category: string;
   onLike: (postId: string, type: 'like' | 'dislike') => void;
   onComment: (postId: string) => void;
   onDelete: (postId: string) => void;
@@ -21,7 +22,7 @@ const PostCard = ({
   post, 
   user, 
   isJoined, 
-  userRole, 
+  userRole,
   onLike, 
   onComment, 
   onDelete,

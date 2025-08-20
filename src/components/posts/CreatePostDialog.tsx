@@ -1,16 +1,6 @@
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
-  Typography,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-} from "@mui/material";
+import {Dialog, DialogTitle, DialogContent, DialogActions,Button, TextField,
+  Typography, Select, MenuItem, FormControl, InputLabel,} from '@mui/material';
+import { postCategories } from '../../services/categoryService';
 
 interface CreatePostDialogProps {
   open: boolean;
@@ -27,7 +17,6 @@ const CreatePostDialog = ({
   onNewPostChange,
   onCreatePost,
 }: CreatePostDialogProps) => {
-  const categories = {'expert': "Experts' Corner", 'scheme': "Schemes and Subsidies", 'success': "Success Stories", 'product': "Products and Services", 'tourism': "Tourism Venues"}
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -79,7 +68,7 @@ const CreatePostDialog = ({
             label="Category"
             onChange={(e) => onNewPostChange("category", e.target.value)}
           >
-            {Object.entries(categories).map(([category, label]) => (
+            {Object.entries(postCategories).map(([category, label]) => (
               <MenuItem key={category} value={category}>{label}</MenuItem>
             ))}
           </Select>

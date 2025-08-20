@@ -1,17 +1,7 @@
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
-  Typography,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-} from "@mui/material";
-import type { Post } from "../../types";
+import {Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField,
+  Typography, Select, MenuItem, FormControl, InputLabel,} from '@mui/material';
+import type { Post } from '../../types';
+import { postCategories } from '../../services/categoryService';
 
 interface EditPostDialogProps {
   open: boolean;
@@ -28,7 +18,6 @@ const EditPostDialog = ({
   onPostChange,
   onSavePost,
 }: EditPostDialogProps) => {
-  const categories = {'expert': "Experts' Corner", 'scheme': "Schemes and Subsidies", 'success': "Success Stories", 'product': "Products and Services", 'tourism': "Tourism Venues"}
 
   if (!post) return null;
 
@@ -82,7 +71,7 @@ const EditPostDialog = ({
             label="Category"
             onChange={(e) => onPostChange("category", e.target.value)}
           >
-            {Object.entries(categories).map(([category, label]) => (
+            {Object.entries(postCategories).map(([category, label]) => (
               <MenuItem key={category} value={category}>{label}</MenuItem>
             ))}
           </Select>

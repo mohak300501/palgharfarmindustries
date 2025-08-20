@@ -1,4 +1,5 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+import { communityCategories } from '../../services/categoryService'
 
 interface CreateCommunityDialogProps {
   open: boolean;
@@ -15,7 +16,6 @@ const CreateCommunityDialog = ({
   onNewCommunityChange,
   onCreateCommunity
 }: CreateCommunityDialogProps) => {
-  const categories = {'animal': 'Animal-based', 'plant': 'Plant-based'};
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -48,7 +48,7 @@ const CreateCommunityDialog = ({
             label="Category"
             onChange={e => onNewCommunityChange('category', e.target.value)}
           >
-            {Object.entries(categories).map(([category, label]) => (
+            {Object.entries(communityCategories).map(([category, label]) => (
               <MenuItem key={category} value={category}>{label}</MenuItem>
             ))}
           </Select>

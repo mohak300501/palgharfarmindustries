@@ -21,14 +21,14 @@ export const communityService = {
   },
 
   // Load posts for a community (now from top-level 'posts' collection)
-  async loadPosts(communityId: string, postType?: string): Promise<Post[]> {
+  async loadPosts(communityId: string, postCategory?: string): Promise<Post[]> {
     try {
       let q;
-      if (postType) {
+      if (postCategory) {
         q = query(
           collection(db, 'posts'),
           where('communityId', '==', communityId),
-          where('category', '==', postType),
+          where('category', '==', postCategory),
           orderBy('createdAt', 'desc')
         );
       } else {

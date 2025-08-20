@@ -1,5 +1,6 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import type { Community } from '../../types';
+import { communityCategories } from '../../services/categoryService'
 
 interface EditCommunityDialogProps {
   open: boolean;
@@ -18,7 +19,6 @@ const EditCommunityDialog = ({
   onEditedCommunityChange,
   onUpdateCommunity
 }: EditCommunityDialogProps) => {
-  const categories = {'animal': 'Animal-based', 'plant': 'Plant-based'};
 
   if (!community) return null;
 
@@ -53,7 +53,7 @@ const EditCommunityDialog = ({
             label="Category"
             onChange={e => onEditedCommunityChange('category', e.target.value)}
           >
-            {Object.entries(categories).map(([category, label]) => (
+            {Object.entries(communityCategories).map(([category, label]) => (
               <MenuItem key={category} value={category}>{label}</MenuItem>
             ))}
           </Select>

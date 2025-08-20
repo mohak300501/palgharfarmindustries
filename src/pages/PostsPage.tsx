@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Box, Alert, Button } from '@mui/material';
+import { Box, Alert, Button, Typography } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { communityService } from '../services/communityService';
 import type { Community, Post } from '../types';
+import { postCategories } from '../services/categoryService'
 import {
   CommunitySidebar,
   CommunityLayout,
@@ -15,18 +16,12 @@ import {
   EditPostDialog,
   CommentDialog,
 } from '../components/posts';
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-  deleteDoc,
-  doc,
-} from 'firebase/firestore';
+import { collection, getDocs, query, where, deleteDoc, doc, } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const PostsPage = () => {
-  const { communityName, postType } = useParams();
+  const { communityName, postCategory } = useParams();
+  const defPostCategory = postCategory as keyof typeof postCategories;
   const { user, userRole, isJoined, loading, setUserRole, setIsJoined } =
     useAuth(communityName);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -46,7 +41,7 @@ const PostsPage = () => {
   const [newPost, setNewPost] = useState({
     title: '',
     content: '',
-    category: postType || 'expert',
+    category: defPostCategory,
   });
   const [newComment, setNewComment] = useState('');
   const [leaveDialog, setLeaveDialog] = useState(false);
@@ -67,7 +62,7 @@ const PostsPage = () => {
     if (communityData) {
       loadPosts();
     }
-  }, [communityData, postType]);
+  }, [communityData, defPostCategory]);
 
   const loadCommunityData = async () => {
     if (!communityName) return;
@@ -91,7 +86,7 @@ const PostsPage = () => {
     try {
       const postsData = await communityService.loadPosts(
         communityData.id,
-        postType
+        defPostCategory
       );
       setPosts(postsData);
       // Fetch all comments for these posts
@@ -132,8 +127,7 @@ const PostsPage = () => {
       setIsJoined(true);
       setUserRole('member');
       setInfo(
-        `Joined ${
-          communityData?.name || communityName
+        `Joined ${communityData?.name || communityName
         } community! You can now interact with posts and comments.`
       );
     } catch (err: any) {
@@ -153,8 +147,7 @@ const PostsPage = () => {
       setIsJoined(false);
       setUserRole('user');
       setInfo(
-        `Left ${
-          communityData?.name || communityName
+        `Left ${communityData?.name || communityName
         } community. All your interactions have been deleted.`
       );
       setLeaveDialog(false);
@@ -185,7 +178,7 @@ const PostsPage = () => {
       setNewPost({
         title: '',
         content: '',
-        category: postType || 'expert',
+        category: defPostCategory,
       });
       loadPosts();
     } catch (err: any) {
@@ -351,6 +344,9 @@ const PostsPage = () => {
         </Alert>
       )}
 
+      <Typography variant="h4" gutterBottom textAlign="center">
+        {postCategories[defPostCategory].charAt(0).toUpperCase() + postCategories[defPostCategory].slice(1)}
+      </Typography>
       <PostsList
         posts={getFilteredAndSortedPosts()}
         user={user}

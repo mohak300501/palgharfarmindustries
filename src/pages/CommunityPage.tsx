@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { communityService } from '../services/communityService';
 import type { Community } from '../types';
+import { postCategories } from '../services/categoryService';
 
 const CommunityPage = () => {
   const { communityName } = useParams();
@@ -54,8 +55,8 @@ const CommunityPage = () => {
     }
   };
 
-  const handleViewPosts = (postType: string) => {
-    navigate(`/c/${communityName}/p/${postType}`);
+  const handleViewPosts = (postCategory: string) => {
+    navigate(`/c/${communityName}/p/${postCategory}`);
   };
 
   if (loading) return <Box textAlign="center" mt={8}><Alert severity="info">Loading...</Alert></Box>;
@@ -88,22 +89,12 @@ const CommunityPage = () => {
           </Box>
         </Stack>
 
-        <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap">
-          <Button variant="contained" onClick={() => handleViewPosts('expert')}>
-            Experts' Corner
-          </Button>
-          <Button variant="contained" onClick={() => handleViewPosts('scheme')}>
-            Schemes and Subsidies
-          </Button>
-          <Button variant="contained" onClick={() => handleViewPosts('success')}>
-            Success Stories
-          </Button>
-          <Button variant="contained" onClick={() => handleViewPosts('product')}>
-            Products and Services
-          </Button>
-          <Button variant="contained" onClick={() => handleViewPosts('tourism')}>
-            Tourism Venues
-          </Button>
+        <Stack direction="row" gap={2} justifyContent="center" flexWrap="wrap">
+          {Object.entries(postCategories).map(([category, label]) => (
+            <Button variant="contained" onClick={() => handleViewPosts(category)}>
+              {label}
+            </Button>
+          ))}
         </Stack>
       </Paper>
 
